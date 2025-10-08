@@ -31,7 +31,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch("/pages/api/auth/register", {
+      const res = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })
@@ -78,7 +78,7 @@ export default function Register() {
           <p className="mt-2 text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link
-              href="/pages/signin"
+              href="/signin"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               Sign in
