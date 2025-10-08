@@ -23,9 +23,10 @@ export default function SignIn() {
       const result = await signIn("credentials", {
         email,
         password,
+
         redirect: false,
       });
-      console.log(result , "result")
+      console.log(result, "result");
 
       if (result?.error) {
         setError("Invalid email or password");
@@ -33,6 +34,7 @@ export default function SignIn() {
       }
 
       router.push("/dashboard");
+
       router.refresh();
     } catch (err) {
       setError("An error occurred");

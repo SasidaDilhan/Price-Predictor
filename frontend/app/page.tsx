@@ -4,7 +4,7 @@ import SignIn from "./auth/signin/page";
 function page() {
   return (
     <div>
-      {/* <SignIn /> */}
+      <SignIn />
     </div>
   );
 }

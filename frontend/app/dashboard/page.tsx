@@ -1,14 +1,12 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+// import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import SignOutButton from "./SignOutButton";
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
 
-  if (!session) {
-    redirect("/signin");
-  }
+  
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">

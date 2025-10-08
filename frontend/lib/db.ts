@@ -1,11 +1,21 @@
-import clientPromise from './mongodb';
+import User from "@/model/user";
+import bcrypt from "bcryptjs";
+import connectToDatabase from "./mongodb";
 
-export async function getDatabase() {
-  const client = await clientPromise;
-  return client.db('Computer_Buddy');
-}
+connectToDatabase();
 
-export async function getUsersCollection() {
-  const db = await getDatabase();
-  return db.collection('users');
+export async function login(credentials: { email: string; password: string }) {
+  const user = await User.findOne({ email: credentials.email });
+
+  if (!user || !user.password) {
+    throw new Error("Invalid credentials");
+  }
+
+  const isValid = await bcrypt.compare(credentials.password, user.password);
+
+  if (!isValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  return user;
 }
