@@ -36,9 +36,10 @@ export const authOptions: NextAuthOptions = {
         if (!isValid) {
           throw new Error("Invalid credentials");
         }
-
+console.log("user", user)
         return {
           id: user._id.toString(),
+          role : user.role,
           email: user.email,
           name: user.name,
           image: user.image || null
@@ -70,12 +71,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id,
+        
       }
       return token;
     },
    async session({ session, token }) {
   (session.user as any).id = token.id
+  
   return session
 }
   },

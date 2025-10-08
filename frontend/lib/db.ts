@@ -2,7 +2,7 @@ import clientPromise from './mongodb';
 
 export async function getDatabase() {
   const client = await clientPromise;
-  return client.db('Computer_Buddy'); // Change to your database name
+  return client.db('Computer_Buddy');
 }
 
 export async function getUsersCollection() {
