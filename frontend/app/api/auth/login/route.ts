@@ -9,41 +9,36 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    const { username, email, password, role } = await req.json();
+    const { email, password } = await req.json();
 
     // Validate input
-    if (!username || !email || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Email and password are required' },
         { status: 400 }
       );
     }
 
-    // Check if user exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return NextResponse.json({ error: 'User Not Found' }, { status: 404 });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'User already exists' },
-        { status: 409 }
+        { error: 'Invalid Password' },
+        { status: 401 }
       );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user (only admin can set role to 'admin')
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-      role: role === 'admin' ? 'admin' : 'user', // Default to 'user'
-    });
-
     // Generate token
     const token = generateToken({
-      userId: newUser._id.toString(),
-      username: newUser.username,
-      role: newUser.role,
+      userId: user._id.toString(),
+      username: user.username,
+      role: user.role,
     });
 
     // Create response
@@ -51,13 +46,13 @@ export async function POST(req: NextRequest) {
       {
         success: true,
         user: {
-          id: newUser._id,
-          username: newUser.username,
-          email: newUser.email,
-          role: newUser.role,
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
         },
       },
-      { status: 201 }
+      { status: 200 }
     );
 
     // Set cookie
@@ -73,7 +68,7 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
