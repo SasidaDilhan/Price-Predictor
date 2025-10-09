@@ -16,20 +16,13 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
     if (token.role !== 'admin') {
-      return NextResponse.redirect(new URL('/user/home', request.url));
-    }
-  }
-
-  // Protect user routes
-  if (pathname.startsWith('/user')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
   // Redirect logged-in users from login/signup pages
   if ((pathname === '/login' || pathname === '/signup') && token) {
-    const redirectUrl = token.role === 'admin' ? '/admin/dashboard' : '/user/home';
+    const redirectUrl = token.role === 'admin' ? '/admin/dashboard' : '/';
     return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
@@ -37,5 +30,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/user/:path*', '/login', '/signup'],
+  matcher: ['/admin/:path*', '/login', '/signup'],
 };

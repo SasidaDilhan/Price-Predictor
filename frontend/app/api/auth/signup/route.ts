@@ -8,13 +8,12 @@ interface SignupBody {
   email: string;
   password: string;
   name: string;
-  role?: 'admin' | 'user';
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: SignupBody = await req.json();
-    const { email, password, name, role } = body;
+    const { email, password, name } = body;
 
     if (!email || !password || !name) {
       return NextResponse.json(
@@ -26,6 +25,14 @@ export async function POST(req: NextRequest) {
     if (password.length < 6) {
       return NextResponse.json(
         { message: 'Password must be at least 6 characters' },
+        { status: 400 }
+      );
+    }
+
+    // Prevent creating admin through signup
+    if (email === process.env.ADMIN_EMAIL) {
+      return NextResponse.json(
+        { message: 'This email is reserved' },
         { status: 400 }
       );
     }
@@ -46,14 +53,14 @@ export async function POST(req: NextRequest) {
       email,
       password: hashedPassword,
       name,
-      role: role || 'user',
+      role: 'user', // All signups are regular users
     });
 
     return NextResponse.json(
       { 
         message: 'User created successfully', 
         user: {
-          id: user._id,
+          id: user._id.toString(),
           email: user.email,
           name: user.name,
           role: user.role,
