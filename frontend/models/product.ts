@@ -7,13 +7,13 @@
 import mongoose, { Model, Schema } from "mongoose";
 
 
-type Tproduct = {
+export type Tproduct = {
     name : string;
     price : number;
     model : string;
     description : string;
     stock : number;
-    createdAt : Date;
+    createdAt? : Date;
 }
 
 export const ProductSchema = new Schema<Tproduct>({
