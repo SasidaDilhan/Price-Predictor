@@ -1,39 +1,48 @@
-import mongoose, { Document, Model, Schema, Types } from 'mongoose';
+import mongoose, { Model, Schema,  } from "mongoose";
 
-export interface IUser {
+
+// export interface IUser {
+//   email: string;
+//   password: string;
+//   name: string;
+//   role: "admin" | "user";
+//   createdAt: Date;
+// }
+
+type Tuser = {
   email: string;
   password: string;
   name: string;
-  role: 'admin' | 'user';
+  role: "admin" | "user";
   createdAt: Date;
-}
+};
 
-export interface IUserDocument extends IUser, Document {
-  _id: Types.ObjectId;
-}
+// export interface IUserDocument extends IUser, Document {
+//   _id: Types.ObjectId;
+// }
 
-const UserSchema = new Schema<IUserDocument>({
+const UserSchema = new Schema<Tuser>({
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, "Email is required"],
     unique: true,
     lowercase: true,
     trim: true,
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters'],
+    required: [true, "Password is required"],
+    minlength: [6, "Password must be at least 6 characters"],
   },
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, "Name is required"],
     trim: true,
   },
   role: {
     type: String,
-    enum: ['admin', 'user'],
-    default: 'user',
+    enum: ["admin", "user"],
+    default: "user",
   },
   createdAt: {
     type: Date,
@@ -41,6 +50,7 @@ const UserSchema = new Schema<IUserDocument>({
   },
 });
 
-const User: Model<IUserDocument> = mongoose.models.User || mongoose.model<IUserDocument>('User', UserSchema);
+const User: Model<Tuser> =
+  mongoose.models.User || mongoose.model<Tuser>("User", UserSchema);
 
 export default User;
