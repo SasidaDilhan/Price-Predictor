@@ -7,9 +7,9 @@ await dbConnect();
 export async function POST(req: NextRequest) {
   try {
     const body: Tproduct = await req.json();
-    const { name, price, model, description, stock } = body;
+    const { name, price, model, description, stock, images } = body;
 
-    if (!name || !price || !model || !description || stock === undefined) {
+    if (!name || !price || !model || !description || !stock || !images === undefined) {
       return new Response(
         JSON.stringify({ message: "Missing required fields" }),
         { status: 400 }
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       price,
       model,
       description,
+      images,
       stock,
     });
 

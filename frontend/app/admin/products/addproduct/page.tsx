@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Package } from "lucide-react";
+import { AlertCircle, CheckCircle2, Package, Upload, X } from "lucide-react";
 import React, { useState } from "react";
 
 const Page = () => {
@@ -10,6 +10,7 @@ const Page = () => {
     model: "",
     description: "",
     stock: "",
+    images: [] as string[],
   });
 
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,69 @@ const Page = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // Check total number of images
+    if (formData.images.length + files.length > 5) {
+      setMessage({
+        type: "error",
+        text: "Maximum 5 images allowed",
+      });
+      return;
+    }
+
+    const newImages: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      // Check file size (max 5MB per image)
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage({
+          type: "error",
+          text: `${file.name} is larger than 5MB`,
+        });
+        continue;
+      }
+
+      // Check file type
+      if (!file.type.startsWith("image/")) {
+        setMessage({
+          type: "error",
+          text: `${file.name} is not a valid image`,
+        });
+        continue;
+      }
+
+      // Convert to base64
+      const base64 = await convertToBase64(file);
+      newImages.push(base64);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...newImages],
+    }));
+  };
+
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
@@ -54,6 +118,7 @@ const Page = () => {
           model: "",
           description: "",
           stock: "",
+          images: [],
         });
       } else {
         setMessage({ type: "error", text: data.message || "Error occurred" });
@@ -101,6 +166,63 @@ const Page = () => {
                 <p className="font-medium">{message.text}</p>
               </div>
             )}
+
+            {/* Multiple Image Upload Section */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Product Images ({formData.images.length}/5)
+              </label>
+
+              {/* Image Preview Grid */}
+              {formData.images.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                  {formData.images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={image}
+                        alt={`Product ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition opacity-0 group-hover:opacity-100"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      {index === 0 && (
+                        <span className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                          Primary
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload Area */}
+              {formData.images.length < 5 && (
+                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-10 h-10 mb-3 text-gray-400" />
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, GIF up to 5MB (Max 5 images)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageChange}
+                  />
+                </label>
+              )}
+            </div>
 
             <div>
               <label
