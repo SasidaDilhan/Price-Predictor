@@ -36,7 +36,7 @@ export const ProductSchema = new Schema<Tproduct>({
     },
     images: [{
         type: String,
-        required: true
+        required: [true, "At least one product image is required"],
     }],
     createdAt: {
         type: Date,
