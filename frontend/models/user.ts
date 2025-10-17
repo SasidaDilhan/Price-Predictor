@@ -1,14 +1,6 @@
 import mongoose, { Model, Schema,  } from "mongoose";
 
 
-// export interface IUser {
-//   email: string;
-//   password: string;
-//   name: string;
-//   role: "admin" | "user";
-//   createdAt: Date;
-// }
-
 type Tuser = {
   email: string;
   password: string;
@@ -16,10 +8,6 @@ type Tuser = {
   role: "admin" | "user";
   createdAt: Date;
 };
-
-// export interface IUserDocument extends IUser, Document {
-//   _id: Types.ObjectId;
-// }
 
 const UserSchema = new Schema<Tuser>({
   email: {
