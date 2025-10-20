@@ -19,17 +19,17 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check if it's the permanent admin
-        if (
-          credentials.email === process.env.ADMIN_EMAIL &&
-          credentials.password === process.env.ADMIN_PASSWORD
-        ) {
-          return {
-            id: 'admin-permanent',
-            email: process.env.ADMIN_EMAIL!,
-            name: 'Admin',
-            role: 'admin' as const,
-          };
-        }
+        // if (
+        //   credentials.email === process.env.ADMIN_EMAIL &&
+        //   credentials.password === process.env.ADMIN_PASSWORD
+        // ) {
+        //   return {
+        //     id: 'admin-permanent',
+        //     email: process.env.ADMIN_EMAIL!,
+        //     name: 'Admin',
+        //     role: 'admin' as const,
+        //   };
+        // }
 
         // Check regular users in database
         await dbConnect();
@@ -47,6 +47,8 @@ export const authOptions: NextAuthOptions = {
         if (!isCorrectPassword) {
           throw new Error('Invalid credentials');
         }
+
+        
 
         return {
           id: user._id.toString(),
