@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   const tabs = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "products", label: "Products", icon: Package },
-    { id: "seller", label: "Sellers", icon: ShieldUser },
+    
   ];
 
   const handleAddProduct = () => {
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
           <div className="p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Admin Dashboard
+              Seller Dashboard
             </h1>
             <p className="text-gray-600">
               Welcome back, {session?.user?.name}!

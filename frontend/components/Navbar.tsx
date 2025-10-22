@@ -40,6 +40,14 @@ export default function Navbar() {
                     Dashboard
                   </Link>
                 )}
+                {session.user.role === "seller" && (
+                  <Link
+                    href="/seller/dashboard"
+                    className="hover:text-blue-100 transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                )}
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <User className="w-4 h-4" />
