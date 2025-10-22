@@ -24,8 +24,7 @@ export async function middleware(request: NextRequest) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
-    if (token.role !== "seller") {
-      // Prevent non-sellers from accessing seller dashboard
+    if (token.role !== "seller" && token.role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }

@@ -12,7 +12,6 @@ import {
   LayoutDashboard,
   Package,
   ShieldUser,
-
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -58,15 +57,13 @@ export default function AdminDashboard() {
 
   const tabs = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "products", label: "Products", icon: Package },
+
     { id: "seller", label: "Sellers", icon: ShieldUser },
   ];
 
-  const handleAddProduct = () => {
-    router.push("/admin/products/addproduct");
+  const handleAddSeller = () => {
+    router.push("/seller/add-seller");
   };
-
-  
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -171,46 +168,6 @@ export default function AdminDashboard() {
           </>
         )}
 
-        {activeTab === "products" && (
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Product Management
-                </h2>
-                <p className="text-gray-600 mt-1">
-                  Manage your product inventory
-                </p>
-              </div>
-              <button
-                onClick={handleAddProduct}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg"
-              >
-                <Plus className="w-5 h-5" />
-                Add Product
-              </button>
-            </div>
-
-            <div className="border-t border-gray-200 pt-6">
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  No products yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Get started by adding your first product
-                </p>
-                <button
-                  onClick={handleAddProduct}
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Your First Product
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
         {activeTab === "seller" && (
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="flex justify-between items-center mb-6">
@@ -223,11 +180,11 @@ export default function AdminDashboard() {
                 </p>
               </div>
               <button
-                onClick={handleAddProduct}
+                onClick={handleAddSeller}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg"
               >
                 <Plus className="w-5 h-5" />
-                Add Product
+                Add Seller
               </button>
             </div>
 
@@ -241,7 +198,7 @@ export default function AdminDashboard() {
                   Get started by adding your first product
                 </p>
                 <button
-                  onClick={handleAddProduct}
+                  onClick={handleAddSeller}
                   className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
                 >
                   <Plus className="w-5 h-5" />

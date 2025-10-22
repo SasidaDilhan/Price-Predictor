@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/user";
+import Seller from "@/models/seller";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -19,7 +20,12 @@ export const authOptions: NextAuthOptions = {
 
         // Check regular users in database
         await dbConnect();
-        const user = await User.findOne({ email: credentials.email });
+        let user = await User.findOne({ email: credentials.email });
+
+        // If not found, try finding in sellers
+        if (!user) {
+          user = await Seller.findOne({ email: credentials.email });
+        }
 
         if (!user || !user.password) {
           throw new Error("Invalid credentials");
@@ -33,10 +39,13 @@ export const authOptions: NextAuthOptions = {
         if (!isCorrectPassword) {
           throw new Error("Invalid credentials");
         }
+
+        const name = "name" in user ? user.name : (user as any).sellerName;
+
         return {
           id: user._id.toString(),
           email: user.email,
-          name: user.name,
+          name,
           role: user.role,
         };
       },

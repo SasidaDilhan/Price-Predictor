@@ -23,6 +23,14 @@ export default function SellerDashboard() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [sellerInfo, setSellerInfo] = useState<any>({
+    sellerName: "",
+    email: "",
+    businessName: "",
+    businessAddress: "",
+    businessLogo: "",
+  });
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -45,6 +53,25 @@ export default function SellerDashboard() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    const fetchSellerInfo = async () => {
+      if (!session?.user?.id) return;
+
+      try {
+        const res = await fetch(`/api/seller?id=${session.user.id}`);
+        const data = await res.json();
+        if (data.seller) {
+          setSellerInfo(data.seller);
+          ;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchSellerInfo();
+  }, [session?.user?.id]);
+console.log("seller Info :", sellerInfo)
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -63,14 +90,14 @@ export default function SellerDashboard() {
   };
 
   // Example seller info (replace with API or DB data)
-  const sellerInfo = {
-    name: session?.user?.name || "John Doe",
-    email: session?.user?.email || "seller@example.com",
-    storeName: "King Products",
-    totalProducts: 12,
-    totalOrders: 45,
-    totalRevenue: "$9,850",
-  };
+  //   const sellerInfo = {
+  //     name: session?.user?.name,
+  //     email: session?.user?.email || "seller@example.com",
+  //     storeName: "King Products",
+  //     totalProducts: 12,
+  //     totalOrders: 45,
+  //     totalRevenue: "$9,850",
+  //   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -120,7 +147,7 @@ export default function SellerDashboard() {
                   <ShieldUser className="w-5 h-5 text-blue-600" />
                   <h3 className="text-gray-700 font-semibold">Name</h3>
                 </div>
-                <p className="text-gray-800">{sellerInfo.name}</p>
+                <p className="text-gray-800">{sellerInfo.sellerName}</p>
               </div>
 
               <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
@@ -136,7 +163,7 @@ export default function SellerDashboard() {
                   <Store className="w-5 h-5 text-blue-600" />
                   <h3 className="text-gray-700 font-semibold">Store Name</h3>
                 </div>
-                <p className="text-gray-800">{sellerInfo.storeName}</p>
+                <p className="text-gray-800">{sellerInfo.businessName}</p>
               </div>
 
               <div className="bg-gray-50 p-5 rounded-lg shadow-sm">

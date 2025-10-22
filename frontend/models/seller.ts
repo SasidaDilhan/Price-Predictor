@@ -35,6 +35,11 @@ const UserSchema = new Schema<Tseller>({
     required: [true, "Address is required"],
     trim: true,
   },
+  businessNmae: {
+    type: String,
+    required: [true, "Business Name is required"],
+    trim: true,
+  },
   role: {
     type: String,
     enum: ["seller"],
