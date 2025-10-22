@@ -72,6 +72,7 @@ export default function SellerDashboard() {
     fetchSellerInfo();
   }, [session?.user?.id]);
 console.log("seller Info :", sellerInfo)
+
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">

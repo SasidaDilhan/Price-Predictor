@@ -5,7 +5,7 @@ type Tseller = {
   email: string;
   password: string;
   sellerName: string;
-  businessNmae:string
+  businessName:string
   role: "seller";
   businessLogo: string;
   businessAddress: string;
@@ -35,7 +35,7 @@ const UserSchema = new Schema<Tseller>({
     required: [true, "Address is required"],
     trim: true,
   },
-  businessNmae: {
+  businessName: {
     type: String,
     required: [true, "Business Name is required"],
     trim: true,
