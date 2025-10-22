@@ -11,20 +11,39 @@ import {
   Plus,
   LayoutDashboard,
   Package,
+  Store,
+  Mail,
   ShieldUser,
-
 } from "lucide-react";
 
-export default function AdminDashboard() {
+export default function SellerDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/product");
+        const data = await res.json();
+        setProducts(data.products || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   if (status === "loading") {
     return (
@@ -34,43 +53,29 @@ export default function AdminDashboard() {
     );
   }
 
-  const stats = [
-    { label: "Total Users", value: "1,234", icon: Users, color: "bg-blue-500" },
-    {
-      label: "Total Orders",
-      value: "856",
-      icon: ShoppingBag,
-      color: "bg-green-500",
-    },
-    {
-      label: "Revenue",
-      value: "$45,678",
-      icon: DollarSign,
-      color: "bg-purple-500",
-    },
-    {
-      label: "Growth",
-      value: "+23%",
-      icon: TrendingUp,
-      color: "bg-orange-500",
-    },
-  ];
-
   const tabs = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "products", label: "Products", icon: Package },
-    
   ];
 
   const handleAddProduct = () => {
-    router.push("/admin/products/addproduct");
+    router.push("/products/addproduct");
   };
 
-  
+  // Example seller info (replace with API or DB data)
+  const sellerInfo = {
+    name: session?.user?.name || "John Doe",
+    email: session?.user?.email || "seller@example.com",
+    storeName: "King Products",
+    totalProducts: 12,
+    totalOrders: 45,
+    totalRevenue: "$9,850",
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
         <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
           <div className="p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -101,76 +106,71 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Overview Tab */}
         {activeTab === "overview" && (
-          <>
-            <div className="grid md:grid-cols-4 gap-6 mb-6">
-              {stats.map((stat, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-md p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`${stat.color} p-3 rounded-lg`}>
-                      <stat.icon className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <h3 className="text-gray-600 text-sm">{stat.label}</h3>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {stat.value}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Seller Information
+            </h2>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">
-                  Recent Orders
-                </h2>
-                <div className="space-y-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-center p-3 bg-gray-50 rounded"
-                    >
-                      <div>
-                        <p className="font-semibold text-gray-800">
-                          Order #{1000 + i}
-                        </p>
-                        <p className="text-sm text-gray-600">Customer {i}</p>
-                      </div>
-                      <span className="text-green-600 font-semibold">
-                        $1,299
-                      </span>
-                    </div>
-                  ))}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Seller Details */}
+              <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <ShieldUser className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-gray-700 font-semibold">Name</h3>
                 </div>
+                <p className="text-gray-800">{sellerInfo.name}</p>
               </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">
-                  Popular Products
-                </h2>
-                <div className="space-y-3">
-                  {[
-                    "Dell XPS 15",
-                    'MacBook Pro 14"',
-                    "HP Pavilion",
-                    "Lenovo ThinkPad",
-                  ].map((product, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-center p-3 bg-gray-50 rounded"
-                    >
-                      <p className="font-semibold text-gray-800">{product}</p>
-                      <span className="text-blue-600 font-semibold">
-                        {50 - i * 5} sold
-                      </span>
-                    </div>
-                  ))}
+              <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <Mail className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-gray-700 font-semibold">Email</h3>
                 </div>
+                <p className="text-gray-800">{sellerInfo.email}</p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <Store className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-gray-700 font-semibold">Store Name</h3>
+                </div>
+                <p className="text-gray-800">{sellerInfo.storeName}</p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <Package className="w-5 h-5 text-green-600" />
+                  <h3 className="text-gray-700 font-semibold">
+                    Total Products
+                  </h3>
+                </div>
+                <p className="text-gray-800">{sellerInfo.totalProducts}</p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <ShoppingBag className="w-5 h-5 text-orange-600" />
+                  <h3 className="text-gray-700 font-semibold">Total Orders</h3>
+                </div>
+                <p className="text-gray-800">{sellerInfo.totalOrders}</p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <DollarSign className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-gray-700 font-semibold">Revenue</h3>
+                </div>
+                <p className="text-gray-800 font-semibold">
+                  {sellerInfo.totalRevenue}
+                </p>
               </div>
             </div>
-          </>
+          </div>
         )}
 
+        {/* Products Tab */}
         {activeTab === "products" && (
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="flex justify-between items-center mb-6">
@@ -191,64 +191,44 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="border-t border-gray-200 pt-6">
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  No products yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Get started by adding your first product
-                </p>
-                <button
-                  onClick={handleAddProduct}
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Your First Product
-                </button>
+            {loading ? (
+              <div className="text-gray-600">Loading products...</div>
+            ) : products.length === 0 ? (
+              <div className="border-t border-gray-200 pt-6">
+                <div className="text-center py-12">
+                  <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    No products yet
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Get started by adding your first product
+                  </p>
+                  <button
+                    onClick={handleAddProduct}
+                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                  >
+                    <Plus className="w-5 h-5" />
+                    Add Your First Product
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
-        {activeTab === "seller" && (
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Seller Management
-                </h2>
-                <p className="text-gray-600 mt-1">
-                  Manage your product inventory
-                </p>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <div key={product._id} className="bg-gray-50 p-4 rounded-lg">
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-40 object-cover rounded-md mb-2"
+                    />
+                    <h3 className="font-semibold text-gray-800">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-600">${product.price}</p>
+                  </div>
+                ))}
               </div>
-              <button
-                onClick={handleAddProduct}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg"
-              >
-                <Plus className="w-5 h-5" />
-                Add Product
-              </button>
-            </div>
-
-            <div className="border-t border-gray-200 pt-6">
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  No products yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Get started by adding your first product
-                </p>
-                <button
-                  onClick={handleAddProduct}
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Your First Product
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>

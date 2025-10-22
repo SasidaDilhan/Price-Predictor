@@ -1,4 +1,4 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, { model, Model, Schema } from "mongoose";
 
 export type Tproduct = {
   name: string;
@@ -62,7 +62,5 @@ if (mongoose.models.Product) {
   delete mongoose.models.Product;
 }
 
-export const Product: Model<Tproduct> = mongoose.model<Tproduct>(
-  "Product2",
-  ProductSchema
-);
+export const Product: Model<Tproduct> =
+  mongoose.models.Product2 || model<Tproduct>("Product2", ProductSchema);
